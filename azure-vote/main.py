@@ -48,7 +48,7 @@ app = Flask(__name__)
 # Requests
 middleware = FlaskMiddleware(
     app,
-    exporter=AzureExporter(connection_string='InstrumentationKey=133c864b-7341-4cb5-8f3e-da745cdd0a4d'),
+    exporter=AzureExporter(connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=a9c1af99-973a-472e-9c4c-fdfbc86afa30'),
     sampler=ProbabilitySampler(1.0)
 )
 
