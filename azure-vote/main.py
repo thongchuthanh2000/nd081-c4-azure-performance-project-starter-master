@@ -26,7 +26,7 @@ from opencensus.trace.tracer import Tracer
 
 # Logging
 logger = logging.getLogger(__name__)
-handler = AzureLogHandler(connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91')
+handler = AzureLogHandler(connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=a9c1af99-973a-472e-9c4c-fdfbc86afa30')
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
@@ -34,12 +34,12 @@ logger.setLevel(logging.INFO)
 # Metrics
 exporter = metrics_exporter.new_metrics_exporter(
     enable_standard_metrics=True,
-    connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91'
+    connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=a9c1af99-973a-472e-9c4c-fdfbc86afa30'
 )
 
 # Tracing
 tracer = Tracer(
-    exporter=AzureExporter(connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91'),
+    exporter=AzureExporter(connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=a9c1af99-973a-472e-9c4c-fdfbc86afa30'),
     sampler=ProbabilitySampler(1.0)
 )
 
