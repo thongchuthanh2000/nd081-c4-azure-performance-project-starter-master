@@ -11,6 +11,7 @@ from datetime import datetime
 # App Insights
 # Import required libraries for App Insights
 from opencensus.ext.azure.log_exporter import AzureLogHandler
+from opencensus.ext.azure.log_exporter import AzureEventHandler
 from opencensus.ext.azure import metrics_exporter
 from opencensus.ext.azure.trace_exporter import AzureExporter
 from opencensus.ext.flask.flask_middleware import FlaskMiddleware
@@ -21,25 +22,34 @@ from opencensus.stats import view as view_module
 from opencensus.tags import tag_map as tag_map_module
 from opencensus.trace.samplers import ProbabilitySampler
 from opencensus.trace.tracer import Tracer
-
+from opencensus.trace import config_integration
 
 
 # Logging
+config_integration.trace_integrations(['logging'])
+config_integration.trace_integrations(['requests'])
 logger = logging.getLogger(__name__)
-handler = AzureLogHandler(connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=a9c1af99-973a-472e-9c4c-fdfbc86afa30')
+
+handler = AzureLogHandler(connection_string='InstrumentationKey=bb192eff-3221-40bf-acbd-fd0b45030a4d;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=f4e30367-4c0e-400f-9b5e-bdf53c8c745e')
+handler.setFormatter(logging.Formatter('%(traceId)s %(spanId)s %(message)s'))
 logger.addHandler(handler)
+
+logger.addHandler(AzureEventHandler(connection_string='InstrumentationKey=bb192eff-3221-40bf-acbd-fd0b45030a4d;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=f4e30367-4c0e-400f-9b5e-bdf53c8c745e'))
 logger.setLevel(logging.INFO)
 
+stats = stats_module.stats
+view_manager = stats.view_manager
 
 # Metrics
 exporter = metrics_exporter.new_metrics_exporter(
     enable_standard_metrics=True,
-    connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=a9c1af99-973a-472e-9c4c-fdfbc86afa30'
+    connection_string='InstrumentationKey=bb192eff-3221-40bf-acbd-fd0b45030a4d;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=f4e30367-4c0e-400f-9b5e-bdf53c8c745e'
 )
+view_manager.register_exporter(exporter)
 
 # Tracing
 tracer = Tracer(
-    exporter=AzureExporter(connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=a9c1af99-973a-472e-9c4c-fdfbc86afa30'),
+    exporter=AzureExporter(connection_string='InstrumentationKey=bb192eff-3221-40bf-acbd-fd0b45030a4d;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=f4e30367-4c0e-400f-9b5e-bdf53c8c745e'),
     sampler=ProbabilitySampler(1.0)
 )
 
@@ -48,7 +58,7 @@ app = Flask(__name__)
 # Requests
 middleware = FlaskMiddleware(
     app,
-    exporter=AzureExporter(connection_string='InstrumentationKey=0c06e8fc-4b2c-4207-a2fc-a4f4f8a88d91;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=a9c1af99-973a-472e-9c4c-fdfbc86afa30'),
+    exporter=AzureExporter(connection_string='InstrumentationKey=bb192eff-3221-40bf-acbd-fd0b45030a4d;IngestionEndpoint=https://westus-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westus.livediagnostics.monitor.azure.com/;ApplicationId=f4e30367-4c0e-400f-9b5e-bdf53c8c745e'),
     sampler=ProbabilitySampler(1.0)
 )
 
@@ -133,5 +143,5 @@ def index():
             return render_template("index.html", value1=int(vote1), value2=int(vote2), button1=button1, button2=button2, title=title)
 
 if __name__ == "__main__":
-    #app.run() 
+    app.run() 
     app.run(host='0.0.0.0', threaded=True, debug=True) # remote
