@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # Variables
 resourceGroup="thanhtc17-c4-project"
 clusterName="udacity-cluster"
